@@ -510,23 +510,10 @@ function showResult() {
       <p class="score">${score} / ${questions.length}</p>
       <p>${employeeName}</p>
       <p>${comment}</p>
-      <button class="send-btn" id="send-btn">Отправить результат руководителю</button>
-      <br>
+      <p class="sent-note" style="display:block">Сделайте скриншот этого экрана и отправьте его руководителю в Битрикс24.</p>
       <button class="restart" onclick="location.reload()">Пройти ещё раз</button>
-      <p class="sent-note" id="sent-note" style="display:none">Почтовая программа должна была открыться с готовым письмом — останется нажать «Отправить». Если ничего не открылось, у вас может быть не настроен почтовый клиент по умолчанию.</p>
     </div>
   `;
-
-  document.getElementById('send-btn').onclick = () => {
-    const subject = encodeURIComponent(`Результат теста по 127-ФЗ — ${employeeName}`);
-    const body = encodeURIComponent(buildEmailBody());
-    const link = document.createElement('a');
-    link.href = `mailto:${MANAGER_EMAIL}?subject=${subject}&body=${body}`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    document.getElementById('sent-note').style.display = 'block';
-  };
 }
 
 renderIntro();
