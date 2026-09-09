@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тест: банкротство физических лиц (127-ФЗ)</title>
+<style>
+  :root {
+    --ink: #1c2b2d;
+    --paper: #f6f3ec;
+    --card: #ffffff;
+    --line: #d8d2c2;
+    --accent: #2e5c4d;
+    --accent-dark: #1e3f34;
+    --wrong: #a3402f;
+    --muted: #6b6558;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: Georgia, 'Times New Roman', serif;
+    line-height: 1.5;
+  }
+  header {
+    padding: 40px 24px 24px;
+    max-width: 720px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--line);
+  }
+  header .kicker {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+    margin: 0 0 8px;
+  }
+  h1 {
+    font-size: 28px;
+    margin: 0 0 10px;
+    color: var(--accent-dark);
+  }
+  header p {
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--muted);
+    font-size: 15px;
+    margin: 0;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+  .progress {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+  .question {
+    font-size: 19px;
+    margin: 0 0 20px;
+    color: var(--ink);
+  }
+  .option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: var(--paper);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    color: var(--ink);
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+  }
+  .option:disabled { cursor: default; }
+  .option.correct {
+    border-color: var(--accent);
+    background: #e7efe9;
+  }
+  .option.incorrect {
+    border-color: var(--wrong);
+    background: #f6e9e6;
+  }
+  .feedback {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    display: none;
+  }
+  .feedback strong { color: var(--ink); }
+  .nav-btn {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    padding: 11px 22px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    display: none;
+  }
+  .nav-btn:hover { background: var(--accent-dark); }
+  .nav-btn:disabled { background: var(--line); cursor: not-allowed; }
+  .result {
+    text-align: center;
+    padding: 40px 24px;
+  }
+  .result .score {
+    font-size: 48px;
+    color: var(--accent-dark);
+    margin: 0 0 8px;
+  }
+  .result p {
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--muted);
+    margin: 4px 0 24px;
+  }
+  .restart {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    background: none;
+    border: 1px solid var(--line);
+    padding: 9px 18px;
+    border-radius: 3px;
+    cursor: pointer;
+    color: var(--ink);
+    margin: 6px;
+  }
+  .restart:hover { border-color: var(--accent); }
+  .send-btn {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    padding: 11px 22px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    margin: 6px;
+  }
+  .send-btn:hover { background: var(--accent-dark); }
+  .name-field {
+    width: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    margin-bottom: 16px;
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .name-field:focus { outline: none; border-color: var(--accent); }
+  .field-label {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .sent-note {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 10px;
+  }
+  footer {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px 40px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="kicker">Внутреннее обучение</p>
+  <h1>Банкротство физических лиц</h1>
+  <p>Тест по общим положениям 127-ФЗ «О несостоятельности (банкротстве)» и стадиям банкротства гражданина. 16 вопросов.</p>
+</header>
+
+<main>
+  <div class="progress" id="progress"></div>
+  <div id="intro-area"></div>
+  <div id="quiz-area" style="display:none"></div>
+  <div id="result-area" style="display:none"></div>
+</main>
+
+<footer>Материал носит справочный характер и не является юридической консультацией.</footer>
+
+<script>
+const MANAGER_EMAIL = "m.koltsova@zaymam.net";
+
+const questions = [
+  {
+    q: "Какой федеральный закон регулирует процедуру банкротства физических лиц в России?",
+    options: [
+      "№127-ФЗ «О несостоятельности (банкротстве)»",
+      "№229-ФЗ «Об исполнительном производстве»",
+      "№353-ФЗ «О потребительском кредите»",
+      "№218-ФЗ «О кредитных историях»"
+    ],
+    correct: 0,
+    explanation: "Банкротство граждан регулируется Федеральным законом от 26.10.2002 №127-ФЗ, в который в 2015 году добавлена глава X о банкротстве физлиц."
+  },
+  {
+    q: "При какой сумме долга гражданин ОБЯЗАН подать заявление о собственном банкротстве в суд?",
+    options: [
+      "От 100 000 рублей",
+      "От 500 000 рублей при просрочке от 3 месяцев",
+      "От 1 000 000 рублей",
+      "Обязанность подавать заявление отсутствует в любом случае"
+    ],
+    correct: 1,
+    explanation: "Если сумма требований к гражданину составляет не менее 500 000 рублей и не исполнена в течение трёх месяцев, должник обязан подать заявление о банкротстве."
+  },
+  {
+    q: "Какие процедуры может применить суд в деле о банкротстве гражданина?",
+    options: [
+      "Только конкурсное производство",
+      "Наблюдение и финансовое оздоровление",
+      "Реструктуризация долгов, реализация имущества, мировое соглашение",
+      "Только реализация имущества"
+    ],
+    correct: 2,
+    explanation: "Применяются три процедуры: реструктуризация долгов, реализация имущества и мировое соглашение на любой стадии."
+  },
+  {
+    q: "Через какой орган можно пройти внесудебное банкротство физического лица?",
+    options: [
+      "Через ФНС",
+      "Через многофункциональный центр (МФЦ)",
+      "Через нотариуса",
+      "Через банк-кредитор"
+    ],
+    correct: 1,
+    explanation: "С 2020 года действует упрощённая процедура — заявление подаётся бесплатно через МФЦ по месту жительства."
+  },
+  {
+    q: "В каком диапазоне должна находиться сумма долга для внесудебного банкротства через МФЦ (по действующим правилам)?",
+    options: [
+      "От 10 000 до 100 000 рублей",
+      "От 25 000 до 1 000 000 рублей",
+      "От 500 000 до 2 000 000 рублей",
+      "Без ограничения суммы"
+    ],
+    correct: 1,
+    explanation: "После расширения программы подать заявление через МФЦ можно при долге от 25 000 до 1 000 000 рублей (при соблюдении иных условий)."
+  },
+  {
+    q: "Что происходит с долгами гражданина после завершения процедуры реализации имущества и освобождения от обязательств?",
+    options: [
+      "Все долги без исключения списываются",
+      "Долги списываются, кроме отдельных категорий (алименты, возмещение вреда жизни/здоровью и др.)",
+      "Долги переходят на поручителей и родственников",
+      "Списывается только часть долга по кредитным картам"
+    ],
+    correct: 1,
+    explanation: "Закон устанавливает исключения: не списываются алименты, возмещение вреда жизни/здоровью, зарплатные требования и некоторые другие обязательства личного характера."
+  },
+  {
+    q: "Сколько лет после признания банкротом гражданин обязан сообщать об этом факте при обращении за новым кредитом?",
+    options: ["1 год", "3 года", "5 лет", "10 лет"],
+    correct: 2,
+    explanation: "В течение 5 лет после завершения процедуры банкротства гражданин обязан указывать этот факт при обращении за кредитом или займом."
+  },
+  {
+    q: "Кто утверждается судом для сопровождения процедуры банкротства гражданина и представления интересов кредиторов?",
+    options: [
+      "Арбитражный (финансовый) управляющий",
+      "Судебный пристав-исполнитель",
+      "Нотариус",
+      "Представитель Росреестра"
+    ],
+    correct: 0,
+    explanation: "Обязательно участвует финансовый управляющий, утверждаемый судом из числа членов СРО арбитражных управляющих."
+  },
+  {
+    q: "На какой максимальный срок судом (без утверждения собранием кредиторов) может быть введена реструктуризация долгов гражданина?",
+    options: [
+      "1 год",
+      "3 года",
+      "5 лет",
+      "10 лет"
+    ],
+    correct: 1,
+    explanation: "План на 3 года может быть утверждён судом, а план на 5 лет — только собранием кредиторов."
+  },
+  {
+    q: "Какое из условий НЕ требуется для введения процедуры реструктуризации долгов гражданина?",
+    options: [
+      "Наличие источника дохода, достаточного для погашения долгов",
+      "Отсутствие судимости за экономические преступления",
+      "Гражданин не признавался банкротом в течение последних 5 лет",
+      "Наличие письменного согласия всех кредиторов"
+    ],
+    correct: 3,
+    explanation: "Согласие всех кредиторов не требуется — план утверждается собранием кредиторов (большинством) или судом. Остальные условия — обязательные требования закона для введения реструктуризации."
+  },
+  {
+    q: "В течение какого срока после утверждения плана реструктуризации долгов гражданин не может рассчитывать на утверждение нового такого плана?",
+    options: [
+      "3 года",
+      "5 лет",
+      "8 лет",
+      "15 лет"
+    ],
+    correct: 2,
+    explanation: "Одно из условий введения реструктуризации — план реструктуризации не утверждался в отношении гражданина в течение последних 8 лет."
+  },
+  {
+    q: "На какой срок вводится процедура реализации имущества гражданина?",
+    options: [
+      "До 1 месяца",
+      "До 6 месяцев (с возможностью продления)",
+      "На 3 года без продления",
+      "Бессрочно"
+    ],
+    correct: 1,
+    explanation: "Процедура вводится на срок до 6 месяцев, но на практике нередко продлевается судом сверх этого срока."
+  },
+  {
+    q: "Какое имущество гражданина НЕ включается в конкурсную массу при реализации имущества?",
+    options: [
+      "Любые денежные средства на счетах",
+      "Единственное жильё и имущество из перечня ст. 446 ГПК РФ",
+      "Ценные бумаги",
+      "Доли в уставном капитале организаций"
+    ],
+    correct: 1,
+    explanation: "Единственное жильё и имущество, перечисленное в ст. 446 ГПК РФ и ст. 101 закона об исполнительном производстве, из конкурсной массы исключается."
+  },
+  {
+    q: "На какой стадии дела о банкротстве гражданина может быть заключено мировое соглашение?",
+    options: [
+      "Только до подачи заявления о банкротстве",
+      "Только на стадии реструктуризации долгов",
+      "На любой стадии дела",
+      "Только после завершения реализации имущества"
+    ],
+    correct: 2,
+    explanation: "Мировое соглашение может быть заключено на любой стадии — как при реструктуризации долгов, так и при реализации имущества."
+  },
+  {
+    q: "Что происходит, если должник впоследствии не исполняет условия утверждённого судом мирового соглашения?",
+    options: [
+      "Ничего, соглашение остаётся в силе автоматически",
+      "Соглашение может быть расторгнуто, и дело о банкротстве возобновляется",
+      "Долг списывается принудительно",
+      "Дело передаётся в суд общей юрисдикции"
+    ],
+    correct: 1,
+    explanation: "При неисполнении условий мировое соглашение может быть расторгнуто, после чего производство по делу о банкротстве возобновляется."
+  },
+  {
+    q: "В каком суде рассматриваются дела о банкротстве физических лиц в России?",
+    options: [
+      "В мировом суде",
+      "В суде общей юрисдикции по месту нахождения кредитора",
+      "В арбитражном суде по месту жительства должника",
+      "В Верховном Суде РФ"
+    ],
+    correct: 2,
+    explanation: "Дела о банкротстве граждан рассматриваются арбитражными судами по месту жительства должника."
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+let employeeName = "";
+let answerLog = [];
+
+function renderIntro() {
+  const introArea = document.getElementById('intro-area');
+  introArea.innerHTML = `
+    <div class="card">
+      <label class="field-label" for="name-input">Фамилия, имя, отчество</label>
+      <input type="text" id="name-input" class="name-field" placeholder="Например: Иванова Мария Сергеевна" autocomplete="name">
+      <button class="nav-btn" id="start-btn" style="display:inline-block" disabled>Начать тест</button>
+    </div>
+  `;
+  const nameInput = document.getElementById('name-input');
+  const startBtn = document.getElementById('start-btn');
+  nameInput.addEventListener('input', () => {
+    startBtn.disabled = nameInput.value.trim().length < 3;
+  });
+  nameInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !startBtn.disabled) startBtn.click();
+  });
+  startBtn.onclick = () => {
+    employeeName = nameInput.value.trim();
+    introArea.style.display = 'none';
+    document.getElementById('quiz-area').style.display = 'block';
+    render();
+  };
+}
+
+function render() {
+  const quizArea = document.getElementById('quiz-area');
+  const progress = document.getElementById('progress');
+
+  if (current >= questions.length) {
+    showResult();
+    return;
+  }
+
+  progress.textContent = `Вопрос ${current + 1} из ${questions.length}`;
+  const item = questions[current];
+  answered = false;
+
+  quizArea.innerHTML = `
+    <div class="card">
+      <p class="question">${item.q}</p>
+      <div id="options"></div>
+      <div class="feedback" id="feedback"></div>
+      <button class="nav-btn" id="next-btn">${current === questions.length - 1 ? 'Показать результат' : 'Следующий вопрос'}</button>
+    </div>
+  `;
+
+  const optionsDiv = document.getElementById('options');
+  item.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.textContent = opt;
+    btn.onclick = () => selectAnswer(i);
+    optionsDiv.appendChild(btn);
+  });
+
+  document.getElementById('next-btn').onclick = () => {
+    current++;
+    render();
+  };
+}
+
+function selectAnswer(i) {
+  if (answered) return;
+  answered = true;
+  const item = questions[current];
+  const buttons = document.querySelectorAll('.option');
+  buttons.forEach((btn, idx) => {
+    btn.disabled = true;
+    if (idx === item.correct) btn.classList.add('correct');
+    else if (idx === i) btn.classList.add('incorrect');
+  });
+
+  const isCorrect = i === item.correct;
+  if (isCorrect) score++;
+  answerLog.push({ q: item.q, given: item.options[i], correctOpt: item.options[item.correct], isCorrect });
+
+  const feedback = document.getElementById('feedback');
+  feedback.style.display = 'block';
+  feedback.innerHTML = `<strong>${isCorrect ? 'Верно.' : 'Неверно.'}</strong> ${item.explanation}`;
+
+  document.getElementById('next-btn').style.display = 'inline-block';
+}
+
+function buildEmailBody() {
+  const date = new Date().toLocaleString('ru-RU');
+  let lines = [];
+  lines.push(`Сотрудник: ${employeeName}`);
+  lines.push(`Дата прохождения: ${date}`);
+  lines.push(`Результат: ${score} из ${questions.length}`);
+  lines.push('');
+  lines.push('Детали по вопросам:');
+  answerLog.forEach((a, idx) => {
+    lines.push('');
+    lines.push(`${idx + 1}. ${a.q}`);
+    lines.push(`Ответ сотрудника: ${a.given}${a.isCorrect ? ' (верно)' : ' (неверно)'}`);
+    if (!a.isCorrect) lines.push(`Правильный ответ: ${a.correctOpt}`);
+  });
+  return lines.join('\n');
+}
+
+function showResult() {
+  document.getElementById('quiz-area').style.display = 'none';
+  document.getElementById('progress').style.display = 'none';
+  const resultArea = document.getElementById('result-area');
+  resultArea.style.display = 'block';
+
+  let comment;
+  if (score === questions.length) comment = 'Отличный результат — материал усвоен полностью.';
+  else if (score >= questions.length * 0.6) comment = 'Хороший результат, но стоит повторить отдельные темы.';
+  else comment = 'Рекомендуем повторно изучить материал по 127-ФЗ.';
+
+  resultArea.innerHTML = `
+    <div class="card result">
+      <p class="score">${score} / ${questions.length}</p>
+      <p>${employeeName}</p>
+      <p>${comment}</p>
+      <p class="sent-note" style="display:block">Сделайте скриншот этого экрана и отправьте его руководителю в Битрикс24.</p>
+      <button class="restart" onclick="location.reload()">Пройти ещё раз</button>
+    </div>
+  `;
+}
+
+renderIntro();
+</script>
+
+</body>
+</html>
